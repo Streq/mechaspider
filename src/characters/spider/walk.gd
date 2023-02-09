@@ -1,5 +1,9 @@
 extends CharacterState
 signal advance
+
+
+export var jump_speed := 100.0
+
 onready var no_more_floor_detect: RayCast2D = $"%no_more_floor_detect"
 onready var corner_detect: RayCast2D = $"%corner_detect"
 onready var stick_to_wall: Node = $"%stick_to_wall"
@@ -25,7 +29,7 @@ func _physics_update(delta):
 		return
 	
 	if root.input_state.B.is_just_pressed():
-		root.velocity = Vector2(root.facing_dir,-1).rotated(root.pivot.rotation)*100.0
+		root.velocity = Vector2(root.facing_dir,-1).rotated(root.pivot.rotation)*jump_speed
 		goto("air")
 		return
 	

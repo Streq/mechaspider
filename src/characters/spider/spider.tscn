@@ -1,8 +1,8 @@
-[gd_scene load_steps=24 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://src/characters/character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/characters/spider/state/idle.gd" type="Script" id=2]
-[ext_resource path="res://src/characters/spider/araña2.png" type="Texture" id=3]
+[ext_resource path="res://src/characters/spider/araña3.png" type="Texture" id=3]
 [ext_resource path="res://src/characters/spider/walk.gd" type="Script" id=4]
 [ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=5]
 [ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=6]
@@ -13,7 +13,7 @@
 [ext_resource path="res://src/characters/spider/stick_to_wall.gd" type="Script" id=11]
 [ext_resource path="res://src/characters/spider/state/air_closed.gd" type="Script" id=12]
 
-[sub_resource type="Image" id=64]
+[sub_resource type="Image" id=70]
 data = {
 "data": PoolByteArray( 255, 255, 255, 0, 252, 252, 252, 255, 60, 188, 252, 255, 0, 112, 236, 255 ),
 "format": "RGBA8",
@@ -22,19 +22,19 @@ data = {
 "width": 4
 }
 
-[sub_resource type="ImageTexture" id=60]
+[sub_resource type="ImageTexture" id=64]
 flags = 0
 flags = 0
-image = SubResource( 64 )
+image = SubResource( 70 )
 size = Vector2( 4, 1 )
 
-[sub_resource type="ShaderMaterial" id=61]
+[sub_resource type="ShaderMaterial" id=65]
 resource_local_to_scene = true
 shader = ExtResource( 5 )
 shader_param/palette_size = 4
 shader_param/offset = 0
 shader_param/blue_index_offset = 0.0
-shader_param/palette = SubResource( 60 )
+shader_param/palette = SubResource( 64 )
 
 [sub_resource type="Animation" id=13]
 resource_name = "RESET"
@@ -462,8 +462,31 @@ tracks/5/keys = {
 [sub_resource type="RectangleShape2D" id=3]
 extents = Vector2( 6, 6 )
 
+[sub_resource type="Image" id=71]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=68]
+flags = 0
+flags = 0
+image = SubResource( 71 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=69]
+resource_local_to_scene = true
+shader = ExtResource( 5 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 68 )
+
 [node name="spider" instance=ExtResource( 1 )]
-material = SubResource( 61 )
+material = SubResource( 65 )
 collision_layer = 2
 gravity = Vector2( 0, 250 )
 
@@ -518,7 +541,7 @@ hframes = 4
 vframes = 3
 frame = 2
 __meta__ = {
-"_editor_description_": "YXNlcHJpdGVfd2l6YXJkX2NvbmZpZwpwbGF5ZXJ8PWFuaW1hdGlvbl9wbGF5ZXIKc291cmNlfD1yZXM6Ly9hc3NldHMvYXNlcHJpdGUvYXJhw7FhMi5hc2Vwcml0ZQpsYXllcnw9Cm9wX2V4cHw9RmFsc2UKb19mb2xkZXJ8PQpvX25hbWV8PQpvbmx5X3Zpc2libGV8PUZhbHNlCm9fZXhfcHw9Cg=="
+"_editor_description_": "YXNlcHJpdGVfd2l6YXJkX2NvbmZpZwpwbGF5ZXJ8PWFuaW1hdGlvbl9wbGF5ZXIKc291cmNlfD1yZXM6Ly9hc3NldHMvYXNlcHJpdGUvYXJhw7FhMy5hc2Vwcml0ZQpsYXllcnw9Cm9wX2V4cHw9RmFsc2UKb19mb2xkZXJ8PQpvX25hbWV8PQpvbmx5X3Zpc2libGV8PUZhbHNlCm9fZXhfcHw9Cg=="
 }
 
 [node name="no_more_floor_detect" type="RayCast2D" parent="pivot" index="1"]
@@ -543,6 +566,7 @@ type = 1
 index = 5
 
 [node name="claw" parent="." index="6" instance=ExtResource( 9 )]
+material = SubResource( 69 )
 distance_from_wearer = 8.0
 
 [node name="stick_to_wall" type="Node" parent="." index="7"]

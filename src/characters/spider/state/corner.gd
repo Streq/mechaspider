@@ -2,6 +2,8 @@ extends CharacterState
 onready var corner_detect: RayCast2D = $"%corner_detect"
 onready var stick_to_wall: Node = $"%stick_to_wall"
 
+export var jump_speed := 100.0
+
 func _enter(params):
 	root.pivot.rotation = PI/2 + corner_detect.get_collision_normal().angle()
 	root.move_and_collide(corner_detect.get_collision_normal()*6)
@@ -16,13 +18,19 @@ func _physics_update(delta):
 	if !root.is_on_wall():
 		goto("air")
 		return
-	
+		
+	if root.input_state.B.is_just_pressed():
+		root.velocity = Vector2(-root.facing_dir,-1).rotated(root.pivot.rotation)*jump_speed
+		goto("air")
+		return
 	
 	var input_dir : Vector2 = root.input_state.dir
 	
 	var rotated_input_dir = input_dir.rotated(-root.pivot.rotation)
+
 	
-		
+	
+	
 	if !is_equal_approx(rotated_input_dir.x,0):
 #		print(rotated_input_dir)
 		root.facing_dir = rotated_input_dir.x

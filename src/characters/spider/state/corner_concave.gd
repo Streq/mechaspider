@@ -1,6 +1,9 @@
 extends CharacterState
 onready var stick_to_wall: Node = $"%stick_to_wall"
 
+
+export var jump_speed := 100.0
+
 func _enter(params):
 	
 	root.pivot.rotation = PI/2 + params[0].normal.angle()
@@ -13,7 +16,11 @@ func _physics_update(delta):
 	if !root.is_on_wall():
 		goto("air")
 		return
-	
+		
+	if root.input_state.B.is_just_pressed():
+		root.velocity = Vector2(root.facing_dir,-1).rotated(root.pivot.rotation)*jump_speed
+		goto("air")
+		return
 	
 	var input_dir : Vector2 = root.input_state.dir
 	

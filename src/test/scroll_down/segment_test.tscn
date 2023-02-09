@@ -25,7 +25,7 @@
 [ext_resource path="res://assets/texture/background_tex.png" type="Texture" id=23]
 [ext_resource path="res://src/test/scroll_down/stepify_position.gd" type="Script" id=24]
 
-[sub_resource type="Image" id=60]
+[sub_resource type="Image" id=58]
 data = {
 "data": PoolByteArray( 255, 255, 0, 255, 126, 126, 1, 255, 60, 60, 2, 255, 21, 0, 31, 255 ),
 "format": "RGBA8",
@@ -37,7 +37,7 @@ data = {
 [sub_resource type="ImageTexture" id=50]
 flags = 0
 flags = 0
-image = SubResource( 60 )
+image = SubResource( 58 )
 size = Vector2( 4, 1 )
 
 [sub_resource type="ShaderMaterial" id=51]
@@ -51,7 +51,7 @@ shader_param/palette = SubResource( 50 )
 [sub_resource type="RectangleShape2D" id=2]
 extents = Vector2( 1680, 200 )
 
-[sub_resource type="Image" id=61]
+[sub_resource type="Image" id=59]
 data = {
 "data": PoolByteArray( 205, 255, 0, 255, 0, 0, 0, 255, 128, 255, 0, 255, 1, 140, 0, 255 ),
 "format": "RGBA8",
@@ -63,7 +63,7 @@ data = {
 [sub_resource type="ImageTexture" id=53]
 flags = 0
 flags = 0
-image = SubResource( 61 )
+image = SubResource( 59 )
 size = Vector2( 4, 1 )
 
 [sub_resource type="ShaderMaterial" id=54]
@@ -102,7 +102,7 @@ shader_param/palette = SubResource( 53 )
 [sub_resource type="RectangleShape2D" id=34]
 extents = Vector2( 480, 268 )
 
-[sub_resource type="Image" id=62]
+[sub_resource type="Image" id=60]
 data = {
 "data": PoolByteArray( 240, 188, 60, 255, 0, 0, 0, 255, 4, 35, 0, 255, 14, 84, 0, 255 ),
 "format": "RGBA8",
@@ -111,10 +111,10 @@ data = {
 "width": 4
 }
 
-[sub_resource type="ImageTexture" id=59]
+[sub_resource type="ImageTexture" id=56]
 flags = 0
 flags = 0
-image = SubResource( 62 )
+image = SubResource( 60 )
 size = Vector2( 4, 1 )
 
 [sub_resource type="ShaderMaterial" id=57]
@@ -123,7 +123,7 @@ shader = ExtResource( 14 )
 shader_param/palette_size = 4
 shader_param/offset = 0
 shader_param/blue_index_offset = 0.0
-shader_param/palette = SubResource( 59 )
+shader_param/palette = SubResource( 56 )
 
 [sub_resource type="TileSet" id=9]
 0/name = "some_autotiles.png 0"
