@@ -1,0 +1,49 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/texture/background_tex.png" type="Texture" id=4]
+[ext_resource path="res://src/levels/infinite_background_layer.gd" type="Script" id=5]
+
+[sub_resource type="Image" id=52]
+data = {
+"data": PoolByteArray( 255, 255, 0, 255, 126, 126, 1, 255, 60, 60, 2, 255, 21, 0, 31, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=50]
+flags = 0
+flags = 0
+image = SubResource( 52 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=51]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 50 )
+
+[node name="infinite_background_layer" type="CanvasLayer"]
+layer = -100
+script = ExtResource( 5 )
+
+[node name="background_texture" type="TextureRect" parent="."]
+material = SubResource( 51 )
+margin_left = -32.0
+margin_top = -32.0
+margin_right = 992.0
+margin_bottom = 572.0
+mouse_filter = 2
+texture = ExtResource( 4 )
+stretch_mode = 2
+__meta__ = {
+"_edit_group_": true
+}
+
+[node name="palette_client" parent="background_texture" instance=ExtResource( 3 )]
+index = 4

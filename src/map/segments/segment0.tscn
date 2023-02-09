@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/map/segments/segment.gd" type="Script" id=2]
+
+[node name="segment" type="Node2D"]
+script = ExtResource( 2 )
+height = 144.0
+
+[node name="wall" type="StaticBody2D" parent="."]
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="wall" groups=["fill_tilemap_polygon"]]
+polygon = PoolVector2Array( -32, 0, -32, 120, 32, 120, 32, 0 )
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="wall" groups=["fill_tilemap_polygon"]]
+position = Vector2( 896, 0 )
+polygon = PoolVector2Array( 32, 0, 32, 120, 96, 120, 96, 0 )
+
+[node name="gap" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2( 0, 144 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="gap"]
+position = Vector2( 0, -136 )
+
+[node name="left_side" type="CollisionPolygon2D" parent="gap/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( -448, -135 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 832, 272, 832, 240 )
+
+[node name="right_side" type="CollisionPolygon2D" parent="gap/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 768, -135 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 832, 272, 832, 240 )

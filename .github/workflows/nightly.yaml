@@ -1,0 +1,172 @@
+name: Nightly Build
+
+on:
+  push:
+    branches:
+      - develop
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GODOT_VERSION: ${{ secrets.GODOT_VERSION }}
+  PROJECT_NAME: ${{ secrets.ITCH_PROJECT_NAME }}
+  RELEASE_LINUX: ${{ secrets.RELEASE_LINUX }}
+  RELEASE_WINDOWS: ${{ secrets.RELEASE_WINDOWS }}
+  RELEASE_MAC: ${{ secrets.RELEASE_MAC }}
+  RELEASE_HTML5: ${{ secrets.RELEASE_HTML5 }}
+  UPLOAD_TO_GH_PAGES: ${{ secrets.UPLOAD_TO_GH_PAGES }}
+
+jobs:
+  BuildAndPublish:
+    runs-on: ubuntu-latest
+    outputs: 
+      version: ${{ steps.versioning.outputs.version }}
+    steps:
+      
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Make Exports Folder
+        run: |
+          mkdir exports
+      
+      - name: Read Version Number
+        id: versioning
+        uses: paulhatch/semantic-version@v4.0.2
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          format: "${major}.${minor}.${patch}"
+          bump_each_commit: true
+          search_commit_body: false
+          user_format_type: "csv"
+      
+      - name: Download + Authorize Godot
+        run: |
+          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          unzip godot.zip
+          mv Godot_v${GODOT_VERSION}-stable_linux_headless.64 godot
+          ls
+          chmod +x godot
+      
+      - name: Download Export Templates
+        run: |
+          curl -L -o export_templates.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip export_templates.zip
+      
+      - name: Install Export Templates
+        run: |
+          mkdir -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+          mv ./templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      
+      - name: Export Windows Port
+        if: ${{ env.RELEASE_WINDOWS == 'true' }}
+        run: |
+          mkdir ./exports/windows
+          ./godot --path ./project.godot --export "Windows Desktop" ./exports/windows/$PROJECT_NAME.exe
+      
+      - name: Export Linux Port
+        if: ${{ env.RELEASE_LINUX == 'true' }}
+        run: |
+          mkdir ./exports/linux
+          ./godot --path ./project.godot --export "Linux/X11" ./exports/linux/$PROJECT_NAME.x86_64
+      
+      - name: Export Mac Port
+        if: ${{ env.RELEASE_MAC == 'true' }}
+        run: |
+          mkdir ./exports/mac
+          ./godot --path ./project.godot --export "Mac OSX" ./exports/mac/$PROJECT_NAME.zip
+      
+      - name: Export HTML5 Port
+        if: ${{ env.RELEASE_HTML5 == 'true' || env.UPLOAD_TO_GH_PAGES == 'true' }}
+        run: |
+          mkdir ./exports/html
+          ./godot --path ./project.godot --export "HTML5" ./exports/html/index.html
+      
+      - name: Publish HTML5 Artifact for Github Pages
+        uses: actions/upload-artifact@v2
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        with:
+          name: gh-pages
+          path: exports/html
+      
+      - name: Delete HTML5 export if it's not to be uploaded
+        if: ${{ env.RELEASE_HTML5 == 'false' && env.UPLOAD_TO_GH_PAGES == 'true' }}
+        run: |
+          rm -rf .exports/html
+      
+      - name: Zip Exports
+        run: |
+          cd exports
+          for file in *; do zip -r "${PROJECT_NAME}_${file%.*}_${{ steps.versioning.outputs.version }}.zip" $file; rm -rf $file; done
+          cd ..
+      
+      - name: Publish Export Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: exports
+          path: exports
+
+  UpdateNightlyRelease:
+    needs: BuildAndPublish
+    permissions: write-all
+    runs-on: ubuntu-latest
+    outputs: 
+      url: ${{ steps.create_release.outputs.html_url }}
+    env:
+      VERSION: ${{ needs.BuildAndPublish.outputs.version }}
+    steps:
+      
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      
+      - name: Download Exports
+        uses: actions/download-artifact@v2
+      
+      - name: Test Release Variables
+        run: |
+          echo "Version Number $VERSION"
+          echo "Commit Message $COMMIT_MESSAGE"
+          echo "Project Name $PROJECT_NAME"
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      
+      - name: Delete old release assets
+        uses: mknejp/delete-release-assets@v1
+        with:
+          fail-if-no-assets: false
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: nightly
+          assets: '*'
+          
+      - name: Upload Exports
+        id: upload-release-asset
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "nightly"
+          files: exports/*
+
+  UploadToGithubPages:
+    needs: BuildAndPublish
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      
+      - name: Download HTML5 Export
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: gh-pages
+          path: gh-pages
+      
+      - name: Deploy
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages

@@ -1,0 +1,33 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://src/util/color/palette.gd" type="Script" id=1]
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=2]
+
+[sub_resource type="Image" id=4]
+data = {
+"data": PoolByteArray( 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=3]
+flags = 0
+flags = 0
+image = SubResource( 4 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=1]
+resource_local_to_scene = true
+shader = ExtResource( 2 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 3 )
+
+[node name="palette" type="Node"]
+script = ExtResource( 1 )
+palette = PoolColorArray( 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1 )
+material = SubResource( 1 )
+string_val = "[\"ff000000\",\"ff000000\",\"ff000000\",\"ff000000\"]"

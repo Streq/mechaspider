@@ -1,0 +1,176 @@
+[gd_scene load_steps=22 format=2]
+
+[ext_resource path="res://src/map/infinite_background_layer.tscn" type="PackedScene" id=1]
+[ext_resource path="res://assets/theme/info_label.tres" type="Theme" id=2]
+[ext_resource path="res://src/characters/square.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/pelota/pelota.tscn" type="PackedScene" id=4]
+[ext_resource path="res://src/characters/follow_player_controller.gd" type="Script" id=5]
+[ext_resource path="res://src/player/controller.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/pelota/araña.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=14]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=15]
+[ext_resource path="res://assets/texture/some_autotiles.png" type="Texture" id=16]
+[ext_resource path="res://src/map/segments/fillable_tilemap.gd" type="Script" id=17]
+
+[sub_resource type="Image" id=62]
+data = {
+"data": PoolByteArray( 240, 188, 60, 255, 0, 0, 0, 255, 4, 35, 0, 255, 14, 84, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=56]
+flags = 0
+flags = 0
+image = SubResource( 62 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=3]
+resource_local_to_scene = true
+shader = ExtResource( 14 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 56 )
+
+[sub_resource type="TileSet" id=9]
+0/name = "some_autotiles.png 0"
+0/texture = ExtResource( 16 )
+0/tex_offset = Vector2( 0, 0 )
+0/modulate = Color( 1, 1, 1, 1 )
+0/region = Rect2( 0, 128, 192, 64 )
+0/tile_mode = 1
+0/autotile/bitmask_mode = 1
+0/autotile/bitmask_flags = [ Vector2( 0, 0 ), 144, Vector2( 0, 1 ), 146, Vector2( 0, 2 ), 18, Vector2( 0, 3 ), 16, Vector2( 1, 0 ), 176, Vector2( 1, 1 ), 178, Vector2( 1, 2 ), 50, Vector2( 1, 3 ), 48, Vector2( 2, 0 ), 184, Vector2( 2, 1 ), 186, Vector2( 2, 2 ), 58, Vector2( 2, 3 ), 56, Vector2( 3, 0 ), 152, Vector2( 3, 1 ), 154, Vector2( 3, 2 ), 26, Vector2( 3, 3 ), 24, Vector2( 4, 0 ), 187, Vector2( 4, 1 ), 434, Vector2( 4, 2 ), 182, Vector2( 4, 3 ), 250, Vector2( 5, 0 ), 440, Vector2( 5, 1 ), 510, Vector2( 5, 2 ), 447, Vector2( 5, 3 ), 62, Vector2( 6, 0 ), 248, Vector2( 6, 1 ), 507, Vector2( 6, 2 ), 255, Vector2( 6, 3 ), 59, Vector2( 7, 0 ), 190, Vector2( 7, 1 ), 218, Vector2( 7, 2 ), 155, Vector2( 7, 3 ), 442, Vector2( 8, 0 ), 432, Vector2( 8, 1 ), 438, Vector2( 8, 2 ), 446, Vector2( 8, 3 ), 54, Vector2( 9, 0 ), 506, Vector2( 9, 1 ), 254, Vector2( 9, 2 ), 511, Vector2( 9, 3 ), 63, Vector2( 10, 0 ), 504, Vector2( 10, 2 ), 443, Vector2( 10, 3 ), 191, Vector2( 11, 0 ), 216, Vector2( 11, 1 ), 251, Vector2( 11, 2 ), 219, Vector2( 11, 3 ), 27 ]
+0/autotile/icon_coordinate = Vector2( 0, 0 )
+0/autotile/tile_size = Vector2( 16, 16 )
+0/autotile/spacing = 0
+0/autotile/occluder_map = [  ]
+0/autotile/navpoly_map = [  ]
+0/autotile/priority_map = [  ]
+0/autotile/z_index_map = [  ]
+0/occluder_offset = Vector2( 0, 0 )
+0/navigation_offset = Vector2( 0, 0 )
+0/shape_offset = Vector2( 0, 0 )
+0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+0/shape_one_way = false
+0/shape_one_way_margin = 0.0
+0/shapes = [  ]
+0/z_index = 0
+
+[sub_resource type="Image" id=63]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=45]
+flags = 0
+flags = 0
+image = SubResource( 63 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=43]
+resource_local_to_scene = true
+shader = ExtResource( 14 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 45 )
+
+[sub_resource type="Image" id=64]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 57, 189, 24, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=60]
+flags = 0
+flags = 0
+image = SubResource( 64 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=61]
+resource_local_to_scene = true
+shader = ExtResource( 14 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 60 )
+
+[node name="level" type="Node2D"]
+
+[node name="terrain" type="TileMap" parent="."]
+material = SubResource( 3 )
+tile_set = SubResource( 9 )
+cell_size = Vector2( 16, 16 )
+format = 1
+script = ExtResource( 17 )
+
+[node name="palette_client" parent="terrain" instance=ExtResource( 15 )]
+index = 5
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="left_side4" type="CollisionPolygon2D" parent="StaticBody2D" groups=["fill_tilemap_polygon"]]
+polygon = PoolVector2Array( -32, -32, -32, 576, 32, 576, 32, -32 )
+
+[node name="left_side5" type="CollisionPolygon2D" parent="StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 928, 0 )
+polygon = PoolVector2Array( 0, -32, 0, 576, 64, 576, 64, -32 )
+
+[node name="left_side6" type="CollisionPolygon2D" parent="StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 448, 0 )
+polygon = PoolVector2Array( -480, 320, -480, 576, 544, 576, 544, 320 )
+
+[node name="left_side7" type="CollisionPolygon2D" parent="StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 448, -512 )
+polygon = PoolVector2Array( -480, 480, -480, 736, 544, 736, 544, 480 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+anchor_mode = 0
+current = true
+
+[node name="pelota" parent="." groups=["player"] instance=ExtResource( 4 )]
+material = SubResource( 43 )
+position = Vector2( 112, 288 )
+
+[node name="controller" parent="pelota" instance=ExtResource( 6 )]
+
+[node name="infinite_background_layer" parent="." instance=ExtResource( 1 )]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="hello" type="Label" parent="CanvasLayer"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -112.0
+margin_top = -142.0
+margin_right = 112.0
+margin_bottom = -85.0
+theme = ExtResource( 2 )
+text = "Buenos dias pelota, usa el boton izquierdo del mouse para disparar tu iconico gancho, mantenelo apretado para agarrarte de las carismaticas paredes!"
+autowrap = true
+uppercase = true
+
+[node name="square" parent="." instance=ExtResource( 3 )]
+material = SubResource( 61 )
+position = Vector2( 464, 305 )
+
+[node name="follow_player_controller" type="Node2D" parent="square"]
+script = ExtResource( 5 )
+
+[node name="pelota2" parent="." instance=ExtResource( 7 )]
+position = Vector2( 272, 288 )
+
+[node name="controller" parent="pelota2" instance=ExtResource( 6 )]

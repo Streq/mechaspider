@@ -1,0 +1,241 @@
+name: Deploy Game
+
+on:
+  push:
+    branches:
+      - main
+env:
+  BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  IS_MAIN: ${{contains(github.ref, 'main')}}
+  DISCORD_WEBHOOK: ${{secrets.DISCORD_WEBHOOK}}
+  PROJECT_NAME: ${{ secrets.PROJECT_NAME }}
+  ITCH_PROJECT_NAME: ${{ secrets.ITCH_PROJECT_NAME }}
+  ITCH_USERNAME: ${{ secrets.ITCH_USERNAME }}
+  GODOT_VERSION: ${{ secrets.GODOT_VERSION }}
+  RELEASE_LINUX: ${{ secrets.RELEASE_LINUX }}
+  RELEASE_WINDOWS: ${{ secrets.RELEASE_WINDOWS }}
+  RELEASE_MAC: ${{ secrets.RELEASE_MAC }}
+  RELEASE_HTML5: ${{ secrets.RELEASE_HTML5 }}
+  PUSH_TO_ITCH: ${{ secrets.PUSH_TO_ITCH }}
+  UPLOAD_TO_GH_PAGES: ${{ secrets.UPLOAD_TO_GH_PAGES }}
+
+jobs:
+  BuildAndPublish:
+    runs-on: ubuntu-latest
+    outputs: 
+      version: ${{ steps.versioning.outputs.version }}
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Make Exports Folder
+        run: |
+          mkdir exports
+      - name: Read Version Number
+        id: versioning
+        uses: paulhatch/semantic-version@v4.0.2
+        with:
+          tag_prefix: "v"
+          major_pattern: "(MAJOR)"
+          minor_pattern: "(MINOR)"
+          format: "${major}.${minor}.${patch}"
+          bump_each_commit: true
+          search_commit_body: false
+          user_format_type: "csv"
+      - name: Download + Authorize Godot
+        run: |
+          curl -L -o godot.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_linux_headless.64.zip
+          unzip godot.zip
+          mv Godot_v${GODOT_VERSION}-stable_linux_headless.64 godot
+          ls
+          chmod +x godot
+      - name: Download Export Templates
+        run: |
+          curl -L -o export_templates.zip https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
+          unzip export_templates.zip
+      - name: Install Export Templates
+        run: |
+          mkdir -p ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+          mv ./templates/* ~/.local/share/godot/templates/${GODOT_VERSION}.stable
+      - name: Export Windows Port
+        if: ${{ env.RELEASE_WINDOWS == 'true' }}
+        run: |
+          mkdir ./exports/windows
+          ./godot --path ./project.godot --export "Windows Desktop" ./exports/windows/"$PROJECT_NAME".exe
+      - name: Export Linux Port
+        if: ${{ env.RELEASE_LINUX == 'true' }}
+        run: |
+          mkdir ./exports/linux
+          ./godot --path ./project.godot --export "Linux/X11" ./exports/linux/"$PROJECT_NAME".x86_64
+      - name: Export Mac Port
+        if: ${{ env.RELEASE_MAC == 'true' }}
+        run: |
+          mkdir ./exports/mac
+          ./godot --path ./project.godot --export "Mac OSX" ./exports/mac/"$PROJECT_NAME".zip
+      - name: Export HTML5 Port
+        if: ${{ env.RELEASE_HTML5 == 'true' || env.UPLOAD_TO_GH_PAGES == 'true' }}
+        run: |
+          mkdir ./exports/html
+          ./godot --path ./project.godot --export "HTML5" ./exports/html/index.html
+      - name: Publish HTML5 Artifact for Github Pages
+        uses: actions/upload-artifact@v2
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        with:
+          name: gh-pages
+          path: exports/html
+      - name: Delete HTML5 export if it's not to be uploaded
+        if: ${{ env.RELEASE_HTML5 == 'false' && env.UPLOAD_TO_GH_PAGES == 'true' }}
+        run: |
+          rm -rf .exports/html
+      - name: Zip Exports
+        run: |
+          cd exports
+          for file in *; do zip -r "${ITCH_PROJECT_NAME}_${file%.*}_${{ steps.versioning.outputs.version }}.zip" $file; rm -rf $file; done
+          cd ..
+      - name: Publish Export Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: exports
+          path: exports
+
+  CreateNewGithubRelease:
+    needs: BuildAndPublish
+    permissions: write-all
+    if: ${{ contains(github.ref, 'main') }}
+    runs-on: ubuntu-latest
+    outputs: 
+      url: ${{ steps.create_release.outputs.html_url }}
+    env:
+      VERSION: ${{ needs.BuildAndPublish.outputs.version }}
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Download Exports
+        uses: actions/download-artifact@v2
+      - name: Test Release Variables
+        run: |
+          echo "Version Number $VERSION"
+          echo "Commit Message $COMMIT_MESSAGE"
+          echo "Project Name $PROJECT_NAME"
+        env:
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      - name: Create New Release
+        uses: actions/create-release@v1
+        id: create_release
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body: ${{ github.event.head_commit.message }}
+          draft: false
+          prerelease: false
+      - name: Upload Exports
+        id: upload-release-asset
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          files: exports/*
+  ShouldPushToItch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail If Should Not Push To Itch
+        if: ${{ env.PUSH_TO_ITCH != 'true'}}
+        run: exit 1
+  PushExportsToItch:
+    needs: [BuildAndPublish, ShouldPushToItch]
+    runs-on: ubuntu-latest
+    env:
+      VERSION: ${{ needs.BuildAndPublish.outputs.version }}
+    steps:
+      - name: Download Exports
+        uses: actions/download-artifact@v2
+      - name: Download + Authorize Butler
+        run: |
+          curl -L -o butler.zip https://broth.itch.ovh/butler/linux-amd64/LATEST/archive/default
+          unzip butler.zip
+          chmod +x butler
+          ./butler -V
+      - name: Login To Butler
+        run: ./butler login
+      - name: Push Windows Export To Itch
+        if: ${{ env.RELEASE_WINDOWS == 'true' }}
+        run: ./butler push ./exports/${ITCH_PROJECT_NAME}_windows_${VERSION}.zip $ITCH_USERNAME/$ITCH_PROJECT_NAME:win --userversion $VERSION
+      - name: Push Mac Export To Itch
+        if: ${{ env.RELEASE_MAC == 'true' }}
+        run: ./butler push ./exports/${ITCH_PROJECT_NAME}_mac_${VERSION}.zip $ITCH_USERNAME/$ITCH_PROJECT_NAME:mac --userversion $VERSION
+      - name: Push Linux Export To Itch
+        if: ${{ env.RELEASE_LINUX == 'true' }}
+        run: ./butler push ./exports/${ITCH_PROJECT_NAME}_linux_${VERSION}.zip $ITCH_USERNAME/$ITCH_PROJECT_NAME:linux --userversion $VERSION
+      - name: Push HTML5 Export To Itch
+        if: ${{ env.RELEASE_HTML5 == 'true' }}
+        run: ./butler push ./exports/${ITCH_PROJECT_NAME}_html_${VERSION}.zip $ITCH_USERNAME/$ITCH_PROJECT_NAME:html --userversion $VERSION
+  UploadToGithubPages:
+    needs: BuildAndPublish
+    permissions: write-all
+    if: ${{ contains(github.ref, 'main') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download HTML5 Export
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        uses: actions/download-artifact@v2
+        with:
+          name: gh-pages
+          path: gh-pages
+      - name: Deploy
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./gh-pages
+  AlertPipelineResult:
+    needs: [BuildAndPublish, CreateNewGithubRelease, PushExportsToItch]
+    #needs: [BuildAndPublish, CreateNewGithubRelease]
+    if: ${{ always() }}
+    env:
+      DID_PREV_JOBS_SUCCEED: ${{ contains(needs.BuildAndPublish.result, 'success' ) && contains(needs.CreateNewGithubRelease.result, 'success' ) && !contains(needs.PushExportsToItch.result, 'failure' ) }}
+      VERSION: ${{ needs.BuildAndPublish.outputs.version }}
+      COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+      RELEASE_URL: ${{ needs.CreateNewGithubRelease.outputs.url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Itch URL
+        if: ${{ env.PUSH_TO_ITCH == 'true' }}
+        id: itch
+        run: |
+          ITCH_LINK="\n[Play it on Itch!](https://${ITCH_USERNAME}.itch.io/${ITCH_PROJECT_NAME})\n"
+          echo "::set-output name=url::$ITCH_LINK"
+      - name: Set Github Pages URL
+        if: ${{ env.UPLOAD_TO_GH_PAGES == 'true' }}
+        id: ghp
+        run: |
+          #transform "owner/repo" -> "repo"
+          REPO_NAME=$(echo "$GITHUB_REPOSITORY" | cut -d/ -f2)
+          GH_PAGES_LINK="https://${GITHUB_REPOSITORY_OWNER}.github.io/${REPO_NAME}"
+          echo "::set-output name=url::$GH_PAGES_LINK"
+      - name: Send Discord Success Message
+        if: ${{ env.IS_MAIN && env.DID_PREV_JOBS_SUCCEED == 'true' }}
+        env:
+          GH_PAGES_LINK: ${{ steps.ghp.outputs.url }}
+          ITCH_LINK: ${{ steps.itch.outputs.url }}
+        run: |
+          sudo apt install -y jq
+          #escape line breaks
+          ESCAPED_COMMIT_MESSAGE="$(echo -n "$COMMIT_MESSAGE" | jq -Rsa)"
+          MESSAGE='{"content": "'"$PROJECT_NAME"' v'"$VERSION"' has successfully [released]('"${RELEASE_URL}"') and [deployed]('"${GH_PAGES_LINK}"')!\nCommit message: '"${ESCAPED_COMMIT_MESSAGE:1:-1}${ITCH_LINK}"'"}'
+          echo "attempting to send message with body:"
+          echo "$MESSAGE"
+          curl --location --request POST $DISCORD_WEBHOOK \
+            --header 'Content-Type: application/json' \
+            --data-raw "$MESSAGE"
+
+      - name: Send Discord Failure Message
+        if: ${{ env.IS_MAIN && env.DID_PREV_JOBS_SUCCEED != 'true' }}
+        run: |
+          curl --location --request POST $DISCORD_WEBHOOK \
+            --header 'Content-Type: application/json' \
+            --data-raw '{"content": "'"$PROJECT_NAME"' '"$VERSION"' release and/or deployment has failed!"}'

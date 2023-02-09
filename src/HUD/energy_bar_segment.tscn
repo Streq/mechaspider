@@ -1,0 +1,80 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
+[ext_resource path="res://assets/texture/black_square.png" type="Texture" id=2]
+[ext_resource path="res://assets/texture/dark_gray_square.png" type="Texture" id=3]
+[ext_resource path="res://src/pelota/time_bar.gd" type="Script" id=4]
+[ext_resource path="res://assets/texture/gray_square.png" type="Texture" id=5]
+[ext_resource path="res://assets/audio/sfx/bip2.wav" type="AudioStream" id=6]
+
+[sub_resource type="Image" id=51]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=50]
+flags = 0
+flags = 0
+image = SubResource( 51 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=37]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 50 )
+
+[sub_resource type="AtlasTexture" id=41]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 4, 23 )
+
+[sub_resource type="AtlasTexture" id=39]
+atlas = ExtResource( 3 )
+region = Rect2( 0, 0, 4, 23 )
+
+[node name="energy_bar_segment" type="TextureProgress"]
+material = SubResource( 37 )
+use_parent_material = true
+margin_right = 4.0
+margin_bottom = 23.0
+step = 0.0
+value = 100.0
+texture_under = SubResource( 41 )
+texture_progress = SubResource( 39 )
+fill_mode = 3
+script = ExtResource( 4 )
+height = 23
+
+[node name="full_bar_marker" type="MarginContainer" parent="."]
+show_behind_parent = true
+use_parent_material = true
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/margin_right = -1
+custom_constants/margin_top = -1
+custom_constants/margin_left = -1
+custom_constants/margin_bottom = -1
+
+[node name="background" type="TextureRect" parent="full_bar_marker"]
+show_behind_parent = true
+use_parent_material = true
+margin_left = -1.0
+margin_top = -1.0
+margin_right = 5.0
+margin_bottom = 24.0
+texture = ExtResource( 5 )
+expand = true
+stretch_mode = 1
+
+[node name="bip" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 6 )
+volume_db = 3.35484
+bus = "sfx"
+
+[connection signal="full" from="." to="bip" method="play"]

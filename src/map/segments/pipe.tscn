@@ -1,0 +1,53 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=3]
+[ext_resource path="res://assets/texture/pipe.png" type="Texture" id=4]
+
+[sub_resource type="Image" id=11]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 240, 188, 60, 255, 14, 84, 0, 255, 21, 0, 31, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=7]
+flags = 0
+flags = 0
+image = SubResource( 11 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=8]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 7 )
+
+[sub_resource type="RectangleShape2D" id=10]
+extents = Vector2( 10, 28 )
+
+[node name="pipe" type="StaticBody2D"]
+z_index = 1000
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PoolVector2Array( -96, -40, -48, -40, -48, -48, -32, -48, -32, -32, -76, -32, -76, 32, -32, 32, -32, 48, -48, 48, -48, 40, -96, 40 )
+
+[node name="Sprite" type="Sprite" parent="."]
+material = SubResource( 8 )
+texture = ExtResource( 4 )
+
+[node name="palette_client" parent="Sprite" instance=ExtResource( 3 )]
+type = 1
+index = 6
+
+[node name="pipe_area" type="Area2D" parent="."]
+position = Vector2( -68, 0 )
+collision_layer = 16
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pipe_area"]
+shape = SubResource( 10 )

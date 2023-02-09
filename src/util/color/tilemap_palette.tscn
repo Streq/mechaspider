@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://src/util/color/tilemap_palette.gd" type="Script" id=1]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=2]
+
+[node name="tilemap_palette" type="Node"]
+script = ExtResource( 1 )
+
+[node name="water" parent="." instance=ExtResource( 2 )]
+index = 3
+
+[node name="rock" parent="." instance=ExtResource( 2 )]
+index = 5
+
+[node name="sky" parent="." instance=ExtResource( 2 )]
+index = 6
+
+[node name="bridge" parent="." instance=ExtResource( 2 )]
+index = 1
+
+[node name="grass" parent="." instance=ExtResource( 2 )]
+index = 2
+
+[node name="trees" parent="." instance=ExtResource( 2 )]
+index = 2

@@ -1,0 +1,119 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://assets/font/Ink Stamp.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://src/map/segments/segment.gd" type="Script" id=2]
+[ext_resource path="res://src/map/segments/pivot.gd" type="Script" id=3]
+[ext_resource path="res://src/map/segments/burla.gd" type="Script" id=4]
+
+[sub_resource type="DynamicFont" id=3]
+size = 8
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=4]
+Label/colors/font_color = Color( 1, 0.890196, 0.388235, 1 )
+Label/fonts/font = SubResource( 3 )
+
+[sub_resource type="RectangleShape2D" id=5]
+extents = Vector2( 217, 88 )
+
+[sub_resource type="RectangleShape2D" id=6]
+
+[node name="segment2" type="Node2D"]
+script = ExtResource( 2 )
+height = 672.0
+
+[node name="pivot" type="Node2D" parent="."]
+position = Vector2( 480, 192 )
+script = ExtResource( 3 )
+
+[node name="burla" type="Node2D" parent="pivot"]
+visible = false
+position = Vector2( -224, 144 )
+script = ExtResource( 4 )
+
+[node name="label" type="Label" parent="pivot/burla"]
+visible = false
+margin_left = -224.0
+margin_top = -112.0
+margin_right = 208.0
+margin_bottom = 64.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = "NOO AMIGO TE RE CABIO"
+align = 1
+valign = 1
+
+[node name="player_detector" type="Area2D" parent="pivot/burla"]
+position = Vector2( 224, -144 )
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pivot/burla/player_detector"]
+position = Vector2( -233, 120 )
+shape = SubResource( 5 )
+
+[node name="camera_detector" type="Area2D" parent="pivot/burla"]
+position = Vector2( 0, -136 )
+collision_layer = 0
+collision_mask = 128
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pivot/burla/camera_detector"]
+shape = SubResource( 6 )
+
+[node name="wall" type="StaticBody2D" parent="pivot"]
+position = Vector2( -480, 352 )
+
+[node name="CollisionPolygon2D3" type="CollisionPolygon2D" parent="pivot/wall" groups=["fill_tilemap_polygon"]]
+position = Vector2( 0, -80 )
+polygon = PoolVector2Array( -32, -464, -32, 192, 32, 192, 32, -464 )
+
+[node name="CollisionPolygon2D4" type="CollisionPolygon2D" parent="pivot/wall" groups=["fill_tilemap_polygon"]]
+position = Vector2( 896, -80 )
+polygon = PoolVector2Array( 32, -464, 32, 192, 96, 192, 96, -464 )
+
+[node name="CollisionPolygon2D5" type="CollisionPolygon2D" parent="pivot/wall" groups=["fill_tilemap_polygon"]]
+position = Vector2( 432, -272 )
+polygon = PoolVector2Array( 32, -64, 32, 112, 64, 112, 64, -64 )
+
+[node name="gap" type="Node2D" parent="pivot"]
+unique_name_in_owner = true
+position = Vector2( -480, 480 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="pivot/gap"]
+position = Vector2( 0, -136 )
+
+[node name="left_side" type="CollisionPolygon2D" parent="pivot/gap/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( -448, -136 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 832, 272, 832, 240 )
+
+[node name="right_side" type="CollisionPolygon2D" parent="pivot/gap/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 768, -136 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 832, 272, 832, 240 )
+
+[node name="gap2" type="Node2D" parent="pivot"]
+position = Vector2( -736, 288 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="pivot/gap2"]
+position = Vector2( 0, -136 )
+
+[node name="left_side" type="CollisionPolygon2D" parent="pivot/gap2/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( -448, -200 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 832, 272, 832, 240 )
+
+[node name="left_side3" type="CollisionPolygon2D" parent="pivot/gap2/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( -160, -392 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 1056, 272, 1056, 240 )
+
+[node name="left_side4" type="CollisionPolygon2D" parent="pivot/gap2/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 1280, -392 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 1056, 272, 1056, 240 )
+
+[node name="left_side2" type="CollisionPolygon2D" parent="pivot/gap2/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 1280, -200 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 832, 272, 832, 240 )
+
+[node name="right_side" type="CollisionPolygon2D" parent="pivot/gap2/StaticBody2D" groups=["fill_tilemap_polygon"]]
+position = Vector2( 768, -200 )
+polygon = PoolVector2Array( -192, 240, -192, 272, 128, 272, 128, 240 )
+
+[connection signal="area_entered" from="pivot/burla/camera_detector" to="pivot/burla" method="_on_camera_detector_area_entered"]

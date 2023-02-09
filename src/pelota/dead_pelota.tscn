@@ -1,0 +1,77 @@
+[gd_scene load_steps=12 format=2]
+
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
+[ext_resource path="res://assets/texture/eye_border.png" type="Texture" id=3]
+[ext_resource path="res://src/transform/fix_rotation.gd" type="Script" id=4]
+[ext_resource path="res://assets/texture/eye_pupil.png" type="Texture" id=5]
+[ext_resource path="res://assets/texture/eye_white.png" type="Texture" id=6]
+[ext_resource path="res://assets/texture/pelota.png" type="Texture" id=7]
+[ext_resource path="res://src/transform/fix_rotation.tscn" type="PackedScene" id=9]
+[ext_resource path="res://src/pelota/dead_pelota.gd" type="Script" id=10]
+
+[sub_resource type="Image" id=39]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=36]
+flags = 0
+flags = 0
+image = SubResource( 39 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=38]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 36 )
+
+[node name="dead_pelota" type="Node2D"]
+script = ExtResource( 10 )
+_velocity = Vector2( 0, -400 )
+_gravity = 400.0
+
+[node name="display" type="Node2D" parent="."]
+material = SubResource( 38 )
+use_parent_material = true
+
+[node name="ball" type="Sprite" parent="display"]
+material = SubResource( 38 )
+use_parent_material = true
+texture = ExtResource( 7 )
+
+[node name="fix_rotation" type="Node" parent="display/ball"]
+script = ExtResource( 4 )
+
+[node name="eye_white" type="Sprite" parent="display"]
+material = SubResource( 38 )
+use_parent_material = true
+texture = ExtResource( 6 )
+
+[node name="fix_rotation" parent="display/eye_white" instance=ExtResource( 9 )]
+
+[node name="pupil_movement" type="Node2D" parent="display"]
+use_parent_material = true
+
+[node name="eye_pupil" type="Sprite" parent="display/pupil_movement"]
+material = SubResource( 38 )
+use_parent_material = true
+texture = ExtResource( 5 )
+
+[node name="fix_rotation" type="Node" parent="display/pupil_movement"]
+script = ExtResource( 4 )
+
+[node name="eye_border" type="Sprite" parent="display"]
+material = SubResource( 38 )
+use_parent_material = true
+texture = ExtResource( 3 )
+
+[node name="fix_rotation" type="Node" parent="display/eye_border"]
+script = ExtResource( 4 )
+step = 0

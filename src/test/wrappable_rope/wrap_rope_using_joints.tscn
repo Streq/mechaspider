@@ -1,0 +1,38 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://src/test/wrappable_rope/rect.gd" type="Script" id=1]
+[ext_resource path="res://src/test/wrappable_rope/joint_on_collision.gd" type="Script" id=2]
+[ext_resource path="res://src/test/util/collisionRectDisplay.tscn" type="PackedScene" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 118, 2 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 18, 10 )
+
+[node name="Node2D2" type="Node2D"]
+
+[node name="RigidBody2D" type="RigidBody2D" parent="."]
+position = Vector2( 246, 48 )
+mass = 0.01
+gravity_scale = 0.0
+script = ExtResource( 2 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
+shape = SubResource( 1 )
+
+[node name="ColorRect" parent="RigidBody2D/CollisionShape2D" instance=ExtResource( 3 )]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2( 143, 86 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource( 2 )
+
+[node name="ColorRect" type="ColorRect" parent="StaticBody2D/CollisionShape2D"]
+margin_left = -18.0
+margin_top = -10.0
+margin_right = 18.0
+margin_bottom = 10.0
+color = Color( 0, 0.0392157, 1, 1 )
+script = ExtResource( 1 )

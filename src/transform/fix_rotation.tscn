@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/transform/fix_rotation.gd" type="Script" id=1]
+
+[node name="fix_rotation" type="Node"]
+script = ExtResource( 1 )
+step = 0

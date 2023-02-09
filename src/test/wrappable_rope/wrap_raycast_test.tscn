@@ -1,0 +1,100 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://src/test/wrappable_rope/wrap_raycast_test.gd" type="Script" id=1]
+[ext_resource path="res://src/test/wrappable_rope/Polygon2D.gd" type="Script" id=2]
+[ext_resource path="res://src/test/wrappable_rope/start_from.gd" type="Script" id=3]
+[ext_resource path="res://src/util/camera/mouse_zoomable_camera.gd" type="Script" id=4]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource( 1 )
+forgiveness_radius = 5.0
+
+[node name="line" type="Line2D" parent="."]
+z_index = -1
+points = PoolVector2Array( 0, 0 )
+width = 5.0
+default_color = Color( 0, 0.164706, 1, 1 )
+
+[node name="raycast" type="RayCast2D" parent="."]
+z_index = -1
+enabled = true
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2( 430, 226 )
+z_index = -1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PoolVector2Array( -29, -9, 5, -25, 59, -13, 52, 28, 1, 44, -34, 12 )
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D/CollisionPolygon2D"]
+z_index = -1
+color = Color( 0.235294, 0.235294, 0.235294, 1 )
+script = ExtResource( 2 )
+
+[node name="StaticBody2D3" type="StaticBody2D" parent="."]
+position = Vector2( 170, 218 )
+z_index = -1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D3"]
+polygon = PoolVector2Array( -29, -9, 5, -25, 62, -18, 62, 198, -34, 198, -34, 14 )
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D3/CollisionPolygon2D"]
+z_index = -1
+color = Color( 0.235294, 0.235294, 0.235294, 1 )
+script = ExtResource( 2 )
+
+[node name="StaticBody2D5" type="StaticBody2D" parent="."]
+position = Vector2( 411, 324 )
+rotation = 0.785397
+z_index = -1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D5"]
+polygon = PoolVector2Array( -29, -9, 5.6568, -19.799, 28.9914, -20.506, 48.7903, -4.94969, 60.8112, 9.89957, 63.6396, 33.9412, 55.8613, 57.2757, 35.3552, 79.196, 10.6065, 86.9741, -12.0209, 75.6604, -26.8701, 56.5685, -33.9412, 36.7695, -34, 12 )
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D5/CollisionPolygon2D"]
+z_index = -1
+color = Color( 0.235294, 0.235294, 0.235294, 1 )
+script = ExtResource( 2 )
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="StaticBody2D5"]
+position = Vector2( 142.129, -68.5892 )
+polygon = PoolVector2Array( -29, -9, -22.6274, -14.1422, -13.4349, -19.0919, -4.24255, -22.6274, 7.07117, -25.4559, 19.7991, -24.0416, 30.4056, -21.9203, 39.598, -16.9705, 53.0331, -7.77814, 58.6899, -0.707062, 62.9325, 9.19244, 65.761, 19.0919, 65.7609, 34.6483, 63.6396, 43.8407, 60.1041, 51.6188, 56.5685, 57.9828, 50.2045, 67.1752, 43.1334, 74.2462, 35.3553, 80.6102, 27.5771, 86.9741, 20.506, 88.3883, 10.6065, 86.9741, -0.00012207, 86.267, -9.1925, 82.7315, -17.6777, 78.4888, -24.7488, 68.5893, -28.9915, 61.5182, -33.2341, 53.033, -36.0625, 41.7192, -37.4767, 33.2339, -37.4767, 24.7487, -36.7695, 15.5563, -35.3553, 4.24257, -33.9411, -2.82851 )
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D5/CollisionPolygon2D2"]
+z_index = -1
+color = Color( 0.235294, 0.235294, 0.235294, 1 )
+script = ExtResource( 2 )
+
+[node name="StaticBody2D4" type="StaticBody2D" parent="."]
+position = Vector2( 343, 63 )
+z_index = -1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D4"]
+polygon = PoolVector2Array( -29, -9, 5, -25, 59, -13, 162, 40, 1, 44, -34, 12 )
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D4/CollisionPolygon2D"]
+z_index = -1
+color = Color( 0.235294, 0.235294, 0.235294, 1 )
+script = ExtResource( 2 )
+
+[node name="StaticBody2D2" type="StaticBody2D" parent="."]
+position = Vector2( 707, 274 )
+z_index = -1
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="StaticBody2D2"]
+polygon = PoolVector2Array( -19, -80, -68, 8, 18, 8, 27, -88, 83.0891, 21.6234, 147, 35, 103, -92, 90, -3, 62, -99, -3, -103, -91, -125, -120, -33, -120, -80, -105, -146, 161, -133, 170, 60, 52, 28, 1, 44, -138, 35 )
+
+[node name="Polygon2D" type="Polygon2D" parent="StaticBody2D2/CollisionPolygon2D"]
+z_index = -1
+color = Color( 0.235294, 0.235294, 0.235294, 1 )
+script = ExtResource( 2 )
+
+[node name="start_from" type="Node" parent="."]
+script = ExtResource( 3 )
+vector_array = "[(0, 0), (431, 270), (482, 254), (489, 213), (435, 201), (401, 217), (385, 280)]"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2( 480, 272 )
+current = true
+process_mode = 0
+script = ExtResource( 4 )

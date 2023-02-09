@@ -1,0 +1,94 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://src/map/segments/segment.gd" type="Script" id=2]
+[ext_resource path="res://src/map/segments/pivot.gd" type="Script" id=3]
+[ext_resource path="res://src/map/segments/fill_tilemap.gd" type="Script" id=4]
+
+[sub_resource type="RectangleShape2D" id=30]
+extents = Vector2( 32, 288 )
+
+[sub_resource type="RectangleShape2D" id=34]
+extents = Vector2( 32, 288 )
+
+[sub_resource type="RectangleShape2D" id=36]
+extents = Vector2( 128, 16 )
+
+[sub_resource type="RectangleShape2D" id=31]
+extents = Vector2( 512, 16 )
+
+[sub_resource type="RectangleShape2D" id=37]
+extents = Vector2( 560, 16 )
+
+[sub_resource type="RectangleShape2D" id=38]
+extents = Vector2( 560, 16 )
+
+[sub_resource type="RectangleShape2D" id=32]
+extents = Vector2( 16, 60 )
+
+[sub_resource type="RectangleShape2D" id=33]
+extents = Vector2( 16, 64 )
+
+[sub_resource type="RectangleShape2D" id=35]
+extents = Vector2( 640, 16 )
+
+[node name="segment" type="Node2D"]
+script = ExtResource( 2 )
+height = 592.0
+leftmost_gap_point = -96
+rightmost_gap_point = 96
+
+[node name="pivot" type="Node2D" parent="."]
+position = Vector2( 480, 0 )
+scale = Vector2( -1, 1 )
+script = ExtResource( 3 )
+
+[node name="wall" type="StaticBody2D" parent="pivot"]
+position = Vector2( -480, 328 )
+script = ExtResource( 4 )
+
+[node name="right_side10" type="CollisionShape2D" parent="pivot/wall"]
+position = Vector2( 0, -40 )
+shape = SubResource( 30 )
+
+[node name="right_side9" type="CollisionShape2D" parent="pivot/wall"]
+position = Vector2( 960, -40 )
+shape = SubResource( 34 )
+
+[node name="gap" type="Node2D" parent="pivot"]
+unique_name_in_owner = true
+position = Vector2( -160, 320 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="pivot/gap"]
+script = ExtResource( 4 )
+
+[node name="right_side1" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( 160, 256 )
+shape = SubResource( 36 )
+
+[node name="right_side4" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( 736, -112 )
+shape = SubResource( 31 )
+
+[node name="right_side5" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( 1040, 256 )
+shape = SubResource( 37 )
+
+[node name="right_side9" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( -720, 256 )
+shape = SubResource( 38 )
+
+[node name="right_side6" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( -480, -112 )
+shape = SubResource( 31 )
+
+[node name="right_side7" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( 304, -60 )
+shape = SubResource( 32 )
+
+[node name="right_side10" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( 160, 192 )
+shape = SubResource( 33 )
+
+[node name="right_side11" type="CollisionShape2D" parent="pivot/gap/StaticBody2D"]
+position = Vector2( -352, 112 )
+shape = SubResource( 35 )

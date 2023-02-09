@@ -1,0 +1,103 @@
+[gd_scene load_steps=17 format=2]
+
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
+[ext_resource path="res://src/pelota/input_state.gd" type="Script" id=2]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/test/rope/pupil_movement.gd" type="Script" id=4]
+[ext_resource path="res://src/transform/fix_rotation.gd" type="Script" id=5]
+[ext_resource path="res://assets/texture/eye_white.png" type="Texture" id=6]
+[ext_resource path="res://src/transform/fix_rotation.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/texture/eye_border.png" type="Texture" id=8]
+[ext_resource path="res://assets/texture/eye_pupil.png" type="Texture" id=9]
+[ext_resource path="res://assets/texture/cubo.png" type="Texture" id=10]
+
+[sub_resource type="Image" id=62]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 57, 189, 24, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=23]
+flags = 0
+flags = 0
+image = SubResource( 62 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=24]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 23 )
+
+[sub_resource type="Image" id=63]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=43]
+flags = 0
+flags = 0
+image = SubResource( 63 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=61]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 43 )
+
+[node name="square" type="Node2D"]
+material = SubResource( 24 )
+
+[node name="ball" type="Sprite" parent="."]
+material = SubResource( 61 )
+use_parent_material = true
+texture = ExtResource( 10 )
+
+[node name="eye_white" type="Sprite" parent="."]
+material = SubResource( 61 )
+use_parent_material = true
+texture = ExtResource( 6 )
+
+[node name="fix_rotation" parent="eye_white" instance=ExtResource( 7 )]
+
+[node name="pupil_movement" type="Node2D" parent="."]
+use_parent_material = true
+script = ExtResource( 4 )
+
+[node name="eye_pupil" type="Sprite" parent="pupil_movement"]
+material = SubResource( 61 )
+use_parent_material = true
+texture = ExtResource( 9 )
+
+[node name="fix_rotation" type="Node" parent="pupil_movement"]
+script = ExtResource( 5 )
+
+[node name="eye_border" type="Sprite" parent="."]
+material = SubResource( 61 )
+use_parent_material = true
+texture = ExtResource( 8 )
+
+[node name="fix_rotation" type="Node" parent="eye_border"]
+script = ExtResource( 5 )
+step = 0
+
+[node name="palette_client" parent="." instance=ExtResource( 3 )]
+type = 1
+index = 2
+
+[node name="input_state" type="Node" parent="."]
+unique_name_in_owner = true
+process_priority = 10
+script = ExtResource( 2 )

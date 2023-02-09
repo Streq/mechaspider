@@ -1,0 +1,240 @@
+[gd_scene load_steps=40 format=2]
+
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
+[ext_resource path="res://src/transform/fix_rotation.gd" type="Script" id=2]
+[ext_resource path="res://src/pelota/claw.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=4]
+[ext_resource path="res://assets/texture/pelota.png" type="Texture" id=5]
+[ext_resource path="res://assets/texture/eye_white.png" type="Texture" id=6]
+[ext_resource path="res://src/test/rope/pupil_movement.gd" type="Script" id=7]
+[ext_resource path="res://src/pelota/araña.gd" type="Script" id=8]
+[ext_resource path="res://assets/texture/eye_pupil.png" type="Texture" id=9]
+[ext_resource path="res://assets/texture/eye_border.png" type="Texture" id=10]
+[ext_resource path="res://src/pelota/input_state.gd" type="Script" id=11]
+[ext_resource path="res://src/pelota/leg.gd" type="Script" id=12]
+[ext_resource path="res://src/transform/fix_rotation.tscn" type="PackedScene" id=13]
+[ext_resource path="res://src/HUD/energy_bar_segment.tscn" type="PackedScene" id=14]
+[ext_resource path="res://src/HUD/energy_bar.gd" type="Script" id=15]
+[ext_resource path="res://src/characters/state/character_state.gd" type="Script" id=16]
+[ext_resource path="res://src/util/state_machine/state_machine.tscn" type="PackedScene" id=17]
+[ext_resource path="res://src/pelota/particle.tscn" type="PackedScene" id=18]
+[ext_resource path="res://src/pelota/pedo.gd" type="Script" id=19]
+[ext_resource path="res://assets/audio/sfx/pedo2.wav" type="AudioStream" id=20]
+[ext_resource path="res://assets/audio/sfx/pedo0.wav" type="AudioStream" id=21]
+[ext_resource path="res://assets/audio/sfx/pedo1.wav" type="AudioStream" id=22]
+[ext_resource path="res://assets/audio/sfx/pedo3.wav" type="AudioStream" id=23]
+[ext_resource path="res://assets/audio/sfx/pedo6.wav" type="AudioStream" id=24]
+[ext_resource path="res://assets/audio/sfx/pedo5.wav" type="AudioStream" id=25]
+[ext_resource path="res://assets/audio/sfx/pedo4.wav" type="AudioStream" id=26]
+[ext_resource path="res://assets/audio/sfx/bounce.wav" type="AudioStream" id=27]
+[ext_resource path="res://src/pelota/pipe_detect.gd" type="Script" id=28]
+[ext_resource path="res://src/pelota/bar.gd" type="Script" id=29]
+[ext_resource path="res://src/pelota/dead_pelota.tscn" type="PackedScene" id=30]
+
+[sub_resource type="Image" id=46]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=45]
+flags = 0
+flags = 0
+image = SubResource( 46 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=43]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 45 )
+
+[sub_resource type="CircleShape2D" id=23]
+radius = 15.0
+
+[sub_resource type="Image" id=47]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=40]
+flags = 0
+flags = 0
+image = SubResource( 47 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=37]
+resource_local_to_scene = true
+shader = ExtResource( 1 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 40 )
+
+[sub_resource type="Animation" id=33]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("display/ball:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=34]
+resource_name = "jump"
+length = 0.2
+step = 0.01
+tracks/0/type = "value"
+tracks/0/path = NodePath("display/ball:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1.2, 1.2 ), Vector2( 1, 1 ) ]
+}
+
+[node name="pelota" type="KinematicBody2D"]
+material = SubResource( 43 )
+position = Vector2( 147, 77 )
+z_index = 10
+collision_layer = 2
+script = ExtResource( 8 )
+PARTICLE = ExtResource( 18 )
+DEAD_PELOTA = ExtResource( 30 )
+
+[node name="state_machine" parent="." instance=ExtResource( 17 )]
+
+[node name="CharacterState" type="Node" parent="state_machine"]
+script = ExtResource( 16 )
+
+[node name="jump" type="Node2D" parent="."]
+show_behind_parent = true
+use_parent_material = true
+rotation = -1.57079
+script = ExtResource( 12 )
+energy_recovery_speed = 0.4
+
+[node name="bar" type="Node" parent="jump"]
+script = ExtResource( 29 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource( 23 )
+
+[node name="claw" parent="." instance=ExtResource( 3 )]
+
+[node name="display" type="Node2D" parent="."]
+material = SubResource( 37 )
+use_parent_material = true
+
+[node name="ball" type="Sprite" parent="display"]
+material = SubResource( 37 )
+use_parent_material = true
+texture = ExtResource( 5 )
+
+[node name="fix_rotation" type="Node" parent="display/ball"]
+script = ExtResource( 2 )
+
+[node name="eye_white" type="Sprite" parent="display"]
+material = SubResource( 37 )
+use_parent_material = true
+texture = ExtResource( 6 )
+
+[node name="fix_rotation" parent="display/eye_white" instance=ExtResource( 13 )]
+
+[node name="pupil_movement" type="Node2D" parent="display"]
+use_parent_material = true
+script = ExtResource( 7 )
+
+[node name="eye_pupil" type="Sprite" parent="display/pupil_movement"]
+material = SubResource( 37 )
+use_parent_material = true
+texture = ExtResource( 9 )
+
+[node name="fix_rotation" type="Node" parent="display/pupil_movement"]
+script = ExtResource( 2 )
+
+[node name="eye_border" type="Sprite" parent="display"]
+material = SubResource( 37 )
+use_parent_material = true
+texture = ExtResource( 10 )
+
+[node name="fix_rotation" type="Node" parent="display/eye_border"]
+script = ExtResource( 2 )
+step = 0
+
+[node name="bar_pivot" type="Node2D" parent="display"]
+use_parent_material = true
+
+[node name="energy_bar" type="VBoxContainer" parent="display/bar_pivot"]
+use_parent_material = true
+margin_left = -23.0
+margin_top = -17.0
+margin_right = -19.0
+margin_bottom = 15.0
+custom_constants/separation = 0
+script = ExtResource( 15 )
+BAR_SEGMENT = ExtResource( 14 )
+
+[node name="fix_rotation" parent="display/bar_pivot" instance=ExtResource( 13 )]
+step = 360
+
+[node name="input_state" type="Node" parent="."]
+unique_name_in_owner = true
+process_priority = 10
+script = ExtResource( 11 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 33 )
+anims/jump = SubResource( 34 )
+
+[node name="palette_client" parent="." instance=ExtResource( 4 )]
+type = 1
+
+[node name="pedo" type="AudioStreamPlayer2D" parent="."]
+volume_db = -3.0
+bus = "sfx"
+script = ExtResource( 19 )
+streams = [ ExtResource( 21 ), ExtResource( 22 ), ExtResource( 20 ), ExtResource( 23 ), ExtResource( 26 ), ExtResource( 25 ), ExtResource( 24 ) ]
+
+[node name="bounce" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource( 27 )
+volume_db = -4.02581
+bus = "sfx"
+
+[node name="pipe_detect" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 16
+script = ExtResource( 28 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pipe_detect"]
+shape = SubResource( 23 )
+
+[node name="hurtbox" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hurtbox"]
+shape = SubResource( 23 )
+
+[connection signal="bounced" from="." to="bounce" method="play"]
+[connection signal="farted" from="." to="pedo" method="play"]
+[connection signal="area_entered" from="hurtbox" to="." method="_on_hurtbox_area_entered"]

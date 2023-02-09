@@ -1,0 +1,285 @@
+[gd_scene load_steps=29 format=2]
+
+[ext_resource path="res://src/map/segments/fill_tilemap.gd" type="Script" id=1]
+[ext_resource path="res://src/map/segments/segment.gd" type="Script" id=2]
+[ext_resource path="res://assets/font/Ink Stamp.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://src/map/segments/player_spawner.gd" type="Script" id=4]
+[ext_resource path="res://src/player/controller.tscn" type="PackedScene" id=5]
+[ext_resource path="res://src/pelota/pelota.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/map/segments/pipe.tscn" type="PackedScene" id=7]
+[ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=8]
+[ext_resource path="res://src/util/color/palette_client.tscn" type="PackedScene" id=9]
+[ext_resource path="res://assets/texture/A.png" type="Texture" id=10]
+[ext_resource path="res://assets/texture/B.png" type="Texture" id=11]
+[ext_resource path="res://src/map/segments/instructions.gd" type="Script" id=12]
+
+[sub_resource type="Image" id=71]
+data = {
+"data": PoolByteArray( 255, 227, 99, 255, 116, 128, 44, 255, 0, 77, 73, 255, 21, 0, 31, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=8]
+flags = 0
+flags = 0
+image = SubResource( 71 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=9]
+resource_local_to_scene = true
+shader = ExtResource( 8 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 8 )
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 32, 56.5 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 1332, 248 )
+
+[sub_resource type="DynamicFont" id=6]
+size = 8
+font_data = ExtResource( 3 )
+
+[sub_resource type="Theme" id=4]
+Label/colors/font_color = Color( 1, 0.890196, 0.388235, 1 )
+Label/fonts/font = SubResource( 6 )
+
+[sub_resource type="CircleShape2D" id=5]
+radius = 14.0
+
+[sub_resource type="Image" id=72]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=64]
+flags = 0
+flags = 0
+image = SubResource( 72 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=65]
+resource_local_to_scene = true
+shader = ExtResource( 8 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 64 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 10 )
+region = Rect2( 0, 0, 32, 32 )
+
+[sub_resource type="Image" id=73]
+data = {
+"data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 57, 189, 24, 255, 0, 0, 0, 255 ),
+"format": "RGBA8",
+"height": 1,
+"mipmaps": false,
+"width": 4
+}
+
+[sub_resource type="ImageTexture" id=69]
+flags = 0
+flags = 0
+image = SubResource( 73 )
+size = Vector2( 4, 1 )
+
+[sub_resource type="ShaderMaterial" id=70]
+resource_local_to_scene = true
+shader = ExtResource( 8 )
+shader_param/palette_size = 4
+shader_param/offset = 0
+shader_param/blue_index_offset = 0.0
+shader_param/palette = SubResource( 69 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 11 )
+region = Rect2( 0, 0, 32, 32 )
+
+[node name="segment" type="Node2D"]
+material = SubResource( 9 )
+script = ExtResource( 2 )
+height = 544.0
+
+[node name="wall" type="StaticBody2D" parent="."]
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="wall"]
+position = Vector2( 0, 56 )
+shape = SubResource( 1 )
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="wall"]
+position = Vector2( 960, 56 )
+shape = SubResource( 1 )
+
+[node name="gap" type="Node2D" parent="."]
+unique_name_in_owner = true
+position = Vector2( 0, 144 )
+
+[node name="StaticBody2D" type="StaticBody2D" parent="gap"]
+position = Vector2( 0, -136 )
+script = ExtResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="gap/StaticBody2D"]
+position = Vector2( 692, 352 )
+shape = SubResource( 2 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 80.0
+margin_top = -104.0
+margin_right = 912.0
+margin_bottom = -22.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = "BUENOS DIAS PELOTA"
+align = 1
+
+[node name="Label3" type="Label" parent="."]
+margin_left = 80.0
+margin_top = -240.0
+margin_right = 912.0
+margin_bottom = -158.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = "TENES QUE LLEGAR A LA CIMA SIN CAERTE DE LA PANTALLA
+"
+align = 1
+
+[node name="Label4" type="Label" parent="."]
+margin_left = 80.0
+margin_top = -376.0
+margin_right = 912.0
+margin_bottom = -294.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = "(PORQUE HAY LAVA ABAJO)"
+align = 1
+
+[node name="Label5" type="Label" parent="."]
+margin_left = 80.0
+margin_top = -480.0
+margin_right = 912.0
+margin_bottom = -398.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = "(Y TE MORIS)"
+align = 1
+
+[node name="pipe" parent="." instance=ExtResource( 7 )]
+position = Vector2( 128, 56 )
+z_index = 4096
+
+[node name="player_spawner" type="Node2D" parent="pipe"]
+position = Vector2( -56, 0 )
+script = ExtResource( 4 )
+PELOTA = ExtResource( 6 )
+spawn_velocity = Vector2( 350, -20 )
+
+[node name="controller" parent="pipe/player_spawner" instance=ExtResource( 5 )]
+
+[node name="player_zone" type="Area2D" parent="pipe/player_spawner"]
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="pipe/player_spawner/player_zone"]
+shape = SubResource( 5 )
+
+[node name="Camera2D" type="Camera2D" parent="pipe/player_spawner"]
+limit_left = 0
+limit_right = 960
+
+[node name="instructions" type="Node2D" parent="."]
+position = Vector2( 480, 224 )
+z_index = 4
+script = ExtResource( 12 )
+
+[node name="labels_pivot" type="Control" parent="instructions"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+
+[node name="non_playjam_instructions" type="Label" parent="instructions/labels_pivot"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -280.0
+margin_top = -8.5
+margin_right = 280.0
+margin_bottom = 8.5
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = "CLICK IZQUIERDO - GANCHO (MANTENER APRETADO PARA AGARRARSE)
+CLICK DERECHO - PEDO (LA BARRITA AL COSTADO TE DICE SI TE PODES TIRAR)"
+
+[node name="playjam_instructions" type="VBoxContainer" parent="instructions/labels_pivot"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -246.0
+margin_top = -34.0
+margin_right = 246.0
+margin_bottom = 34.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="instructions/labels_pivot/playjam_instructions"]
+margin_right = 492.0
+margin_bottom = 32.0
+
+[node name="TextureRect" type="TextureRect" parent="instructions/labels_pivot/playjam_instructions/HBoxContainer"]
+material = SubResource( 65 )
+margin_right = 32.0
+margin_bottom = 32.0
+texture = SubResource( 13 )
+
+[node name="palette_client" parent="instructions/labels_pivot/playjam_instructions/HBoxContainer/TextureRect" instance=ExtResource( 9 )]
+type = 1
+
+[node name="Label2" type="Label" parent="instructions/labels_pivot/playjam_instructions/HBoxContainer"]
+margin_left = 36.0
+margin_top = 12.0
+margin_right = 388.0
+margin_bottom = 19.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = " - GANCHO (MANTENER APRETADO PARA AGARRARSE)"
+align = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="instructions/labels_pivot/playjam_instructions"]
+margin_top = 36.0
+margin_right = 492.0
+margin_bottom = 68.0
+
+[node name="TextureRect2" type="TextureRect" parent="instructions/labels_pivot/playjam_instructions/HBoxContainer2"]
+material = SubResource( 70 )
+margin_right = 32.0
+margin_bottom = 32.0
+texture = SubResource( 17 )
+
+[node name="palette_client" parent="instructions/labels_pivot/playjam_instructions/HBoxContainer2/TextureRect2" instance=ExtResource( 9 )]
+type = 1
+index = 2
+
+[node name="instruction" type="Label" parent="instructions/labels_pivot/playjam_instructions/HBoxContainer2"]
+margin_left = 36.0
+margin_top = 12.0
+margin_right = 492.0
+margin_bottom = 19.0
+grow_horizontal = 2
+theme = SubResource( 4 )
+text = " - PEDO (LA BARRITA AL COSTADO TE DICE SI TE PODES TIRAR)"
+align = 1
+
+[connection signal="init" from="." to="pipe/player_spawner" method="_on_segment_init" flags=3]
