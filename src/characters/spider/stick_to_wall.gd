@@ -1,5 +1,8 @@
 extends Node
 export var enabled:=false
-func _physics_process(delta: float) -> void:
+
+
+func trigger() -> void:
 	if enabled:
-		owner.velocity = Vector2.DOWN.rotated(owner.pivot.rotation)*100
+		owner.velocity = Vector2.DOWN.rotated(owner.pivot.rotation).snapped(Vector2(1,1))
+		owner.move_and_slide(owner.velocity*60)

@@ -45,13 +45,29 @@ func set_linear_velocity(val:Vector2):
 
 func _physics_process(delta: float) -> void:
 	previous_velocity = velocity
-	
+	if state_machine.current.name == "corner":
+		print(is_on_wall())
+		print(velocity)
+		print(global_position)
+		pass
 	emit_signal("pre_move")
+	if state_machine.current.name == "corner":
+		print(is_on_wall())
+		print(velocity)
+		print(global_position)
+		pass
 	velocity = move_and_slide(velocity)
+	if state_machine.current.name == "corner":
+		print(is_on_wall())
+		print(velocity)
+		print(global_position)
+		pass
 	emit_signal("post_move")
 	
 	velocity += gravity*delta
 	velocity *= 1-delta*damping
+	
+	
 	
 	state_machine.physics_update(delta)
 	animation_player.advance(delta)

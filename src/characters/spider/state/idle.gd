@@ -13,7 +13,7 @@ func _physics_update(delta):
 	var rotated_input_dir = input_dir.rotated(-root.pivot.rotation)
 	
 	if root.input_state.B.is_just_pressed():
-		root.velocity = Vector2.UP.rotated(root.pivot.rotation)*jump_speed
+#		root.velocity = Vector2.UP.rotated(root.pivot.rotation)*jump_speed
 		goto("air")
 		return
 		

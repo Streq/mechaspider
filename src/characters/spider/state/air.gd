@@ -2,7 +2,7 @@ extends CharacterState
 onready var stick_to_wall: Node = $"%stick_to_wall"
 
 func _enter(params) -> void:
-	root.pivot.rotation = 0
+#	root.pivot.rotation = 0
 	stick_to_wall.enabled = false
 
 func _physics_update(delta):

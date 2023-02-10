@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://assets/shader/palette.gdshader" type="Shader" id=1]
 [ext_resource path="res://assets/texture/some_autotiles.png" type="Texture" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://src/test/spider/controller.gd" type="Script" id=4]
 [ext_resource path="res://src/test/spider/tilemap_with_query_capabilities_or_something_like_that.gd" type="Script" id=5]
 [ext_resource path="res://src/characters/spider/spider.tscn" type="PackedScene" id=6]
+[ext_resource path="res://src/test/spider/position_label.gd" type="Script" id=7]
 
 [sub_resource type="Image" id=62]
 data = {
@@ -357,10 +358,16 @@ index = 5
 
 [node name="spider" parent="." instance=ExtResource( 6 )]
 position = Vector2( 208, -4 )
-gravity = Vector2( 0, 150 )
 
 [node name="controller" type="Node" parent="spider"]
 script = ExtResource( 4 )
 
 [node name="Camera2D" type="Camera2D" parent="spider"]
 current = true
+
+[node name="Label" type="Label" parent="spider"]
+margin_left = -20.0
+margin_top = -34.0
+margin_right = 20.0
+margin_bottom = -20.0
+script = ExtResource( 7 )

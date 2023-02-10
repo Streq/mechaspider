@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://src/characters/character.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/characters/spider/state/idle.gd" type="Script" id=2]
@@ -12,6 +12,8 @@
 [ext_resource path="res://src/characters/spider/state/air.gd" type="Script" id=10]
 [ext_resource path="res://src/characters/spider/stick_to_wall.gd" type="Script" id=11]
 [ext_resource path="res://src/characters/spider/state/air_closed.gd" type="Script" id=12]
+[ext_resource path="res://assets/texture/A.png" type="Texture" id=13]
+[ext_resource path="res://src/characters/spider/jump.gd" type="Script" id=14]
 
 [sub_resource type="Image" id=70]
 data = {
@@ -459,9 +461,6 @@ tracks/5/keys = {
 "values": [ 3.0, 4.0, 5.0, 6.0, 7.0, 8.0 ]
 }
 
-[sub_resource type="RectangleShape2D" id=3]
-extents = Vector2( 6, 6 )
-
 [sub_resource type="Image" id=71]
 data = {
 "data": PoolByteArray( 255, 255, 255, 0, 255, 227, 99, 255, 255, 57, 8, 255, 0, 0, 0, 255 ),
@@ -485,6 +484,9 @@ shader_param/offset = 0
 shader_param/blue_index_offset = 0.0
 shader_param/palette = SubResource( 68 )
 
+[sub_resource type="RectangleShape2D" id=3]
+extents = Vector2( 6, 6 )
+
 [node name="spider" instance=ExtResource( 1 )]
 material = SubResource( 65 )
 collision_layer = 2
@@ -496,6 +498,7 @@ start_state = "idle"
 [node name="idle" type="Node" parent="state_machine" index="0"]
 script = ExtResource( 2 )
 animation = "idle"
+jump_speed = 250.0
 
 [node name="air" type="Node" parent="state_machine" index="1"]
 script = ExtResource( 10 )
@@ -508,14 +511,17 @@ animation = "air_closed"
 [node name="corner" type="Node" parent="state_machine" index="3"]
 script = ExtResource( 7 )
 animation = "corner"
+jump_speed = 250.0
 
 [node name="corner_concave" type="Node" parent="state_machine" index="4"]
 script = ExtResource( 8 )
 animation = "corner_concave"
+jump_speed = 250.0
 
 [node name="walk" type="Node" parent="state_machine" index="5"]
 script = ExtResource( 4 )
 animation = "walk"
+jump_speed = 250.0
 
 [node name="animation_player" parent="." index="1"]
 playback_speed = 32.0
@@ -557,6 +563,19 @@ rotation = 1.57079
 enabled = true
 cast_to = Vector2( 0, 7 )
 
+[node name="jump" type="Node2D" parent="pivot" index="3"]
+position = Vector2( 0, -2 )
+rotation = -1.5708
+script = ExtResource( 14 )
+
+[node name="Sprite" type="Sprite" parent="pivot/jump" index="0"]
+material = SubResource( 69 )
+texture = ExtResource( 13 )
+hframes = 2
+
+[node name="palette_client" parent="pivot/jump/Sprite" index="0" instance=ExtResource( 6 )]
+type = 1
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." index="4"]
 position = Vector2( 0, 2 )
 shape = SubResource( 3 )
@@ -573,3 +592,6 @@ distance_from_wearer = 8.0
 unique_name_in_owner = true
 process_priority = 1
 script = ExtResource( 11 )
+
+[connection signal="post_move" from="." to="stick_to_wall" method="trigger"]
+[connection signal="pre_move" from="." to="stick_to_wall" method="trigger"]

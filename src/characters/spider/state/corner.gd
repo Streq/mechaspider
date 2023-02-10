@@ -3,17 +3,35 @@ onready var corner_detect: RayCast2D = $"%corner_detect"
 onready var stick_to_wall: Node = $"%stick_to_wall"
 
 export var jump_speed := 100.0
+var turning = false
+
 
 func _enter(params):
-	root.pivot.rotation = PI/2 + corner_detect.get_collision_normal().angle()
-	root.move_and_collide(corner_detect.get_collision_normal()*6)
-	root.move_and_collide(corner_detect.get_collision_normal().rotated(PI/2*root.facing_dir)*6)
-	root.move_and_collide(-corner_detect.get_collision_normal()*6)
-	stick_to_wall.enabled = true
+	corner_detect.force_raycast_update()
+	
+	var collision_normal = corner_detect.get_collision_normal()
+	var collision_point = corner_detect.get_collision_point()
+	
+	var r : RayCast2D = corner_detect
+	
+	var rotation = root.pivot.global_rotation
+	
+	var pivot_xform : Transform2D = root.pivot.transform
+	
+	var global_position_rotated = pivot_xform.xform_inv(root.global_position)
+	var collision_point_rotated = pivot_xform.xform_inv(collision_point)
+	
+	var alpha := Vector2()
+	alpha.y = global_position_rotated.y+6.0
+	alpha.x = collision_point_rotated.x+6.0
+	root.global_position = pivot_xform.xform(alpha)
 
+	root.pivot.global_rotation = PI/2 + collision_normal.angle()
+	
+	stick_to_wall.enabled = true
+	turning = false
+	
 func _physics_update(delta):
-#	if root.animation_player.is_playing():
-#		return
 	
 	if !root.is_on_wall():
 		goto("air")
@@ -29,13 +47,15 @@ func _physics_update(delta):
 	var rotated_input_dir = input_dir.rotated(-root.pivot.rotation)
 
 	
-	
-	
 	if !is_equal_approx(rotated_input_dir.x,0):
-#		print(rotated_input_dir)
-		root.facing_dir = rotated_input_dir.x
-		goto("walk")
-		return
+		if sign(rotated_input_dir.x) == root.facing_dir:
+			root.facing_dir = rotated_input_dir.x
+			goto("walk")
+			return
+		else:
+			root.facing_dir = rotated_input_dir.x
+			goto("walk")
+			return
 	if !is_equal_approx(rotated_input_dir.y,0) and rotated_input_dir.y > 0:
 		root.facing_dir = rotated_input_dir.y*-root.facing_dir
 		goto("walk")

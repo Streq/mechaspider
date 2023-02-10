@@ -48,8 +48,6 @@ func _physics_update(delta):
 	if is_equal_approx(rotated_input_dir.x,0.0):
 		goto("idle")
 		return
-#	print(rotated_input_dir)
-	
 	root.facing_dir = rotated_input_dir.x
 	pass
 
@@ -58,17 +56,11 @@ func advance(step_size := 1.0):
 	emit_signal("advance")
 	if root.state_machine.current != self:
 		return
-#	print("advancing")
 	var r :KinematicBody2D = root
 	var collision = r.move_and_collide(Vector2(root.facing_dir*step_size, 0.0).rotated(root.pivot.rotation))
 	if collision:
-#		print(collision)
-#		root.pivot.rotation = Vector2(root.facing_dir,0)
-#		print(collision.normal)
 		turning = true
-#		yield(self,"advance")
 		queue_goto("corner_concave",[collision])
-#		print("corner_concave")
 		return
 	else:
 		no_more_floor_detect.force_raycast_update()
@@ -76,7 +68,6 @@ func advance(step_size := 1.0):
 			corner_detect.force_raycast_update()
 			if corner_detect.is_colliding():
 				turning = true
-#				yield(self,"advance")
 				queue_goto("corner")
 				return
 
